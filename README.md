@@ -50,6 +50,7 @@ web_automation_framework
 | Browser     | Chrome & ChromeDriver       |
 
 🚀 How to Run Tests
+
 1️⃣ Clone the Repository
 git clone https://github.com/your-username/web_automation_framework.git
 
