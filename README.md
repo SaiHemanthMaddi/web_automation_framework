@@ -88,11 +88,11 @@ Workflow file:
 .github/workflows/ci.yml
 
 📦 Dependencies (Maven)
-selenium-java
-testng
-extentreports
-slf4j
-logback
-webdrivermanager
+1.selenium-java
+2.testng
+3.extentreports
+4.slf4j
+5.logback
+6.webdrivermanager
 
 🤝 Contributions: PRs and improvements are welcome!
