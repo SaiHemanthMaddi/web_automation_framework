@@ -1,148 +1,129 @@
-📘 Web Automation Framework (Selenium + TestNG + Maven)
+🚀 Web Automation Framework
+Selenium • TestNG • Maven • Extent Reports • GitHub Actions CI
+<p align="center"> <img src="https://via.placeholder.com/900x250/121212/FFFFFF?text=Web+Automation+Framework+-+Selenium+%7C+TestNG+%7C+Maven" /> </p> <p align="center"> <img src="https://img.shields.io/badge/Build-Automated-brightgreen?style=for-the-badge" /> <img src="https://img.shields.io/badge/Selenium-4.x-43B02A?style=for-the-badge&logo=selenium&logoColor=white" /> <img src="https://img.shields.io/badge/TestNG-7.x-orange?style=for-the-badge" /> <img src="https://img.shields.io/badge/Java-17+-red?style=for-the-badge&logo=java&logoColor=white" /> <img src="https://img.shields.io/github/actions/workflow/status/SaiHemanthMaddi/Web-Automation-Framework-Selenium-TestNG-Maven/ci.yml?style=for-the-badge" /> </p>
+📌 Overview
 
-A lightweight, scalable, and production-ready Web UI Automation Framework built using
-Java · Selenium WebDriver · TestNG · Maven · Extent Reports · GitHub Actions CI.
+A professional-grade Web UI Automation Framework built using:
 
-This framework follows industry-standard best practices and is designed for:
+✔ Java 17+
+✔ Selenium WebDriver 4.x
+✔ TestNG
+✔ Maven
+✔ Extent Reports (HTML)
+✔ GitHub Actions CI/CD
+✔ SLF4J + Logback Logging
 
-🔹 UI Functional Testing
+Built with industry standards and elegant coding practices, perfect for:
+UI Functional Testing
+Cross-Browser Testing
+CI/CD Execution
+Page Object Model (POM)
+Reporting + Failure Screenshots
+Scalable Test Architecture
 
-🔹 Cross-browser Testing
-
-🔹 CI/CD Integration
-
-🔹 Reusable Page Object Model (POM)
-
-🔹 Reporting with Extent Reports
-
-🔹 Screenshot Capture on Failure
-
-🚀 Tech Stack
-Component	Technology
-Language	Java 17+
-Automation	Selenium WebDriver 4.x
-Test Runner	TestNG
-Build Tool	Maven
-Reporting	Extent Reports (aventstack)
-Design Pattern	Page Object Model (POM)
-CI/CD	GitHub Actions
-Logging	SLF4J + Logback
-📁 Project Structure
+🏗️ Project Architecture
 web_automation_framework
+│── pom.xml
+│── README.md
 │
 ├── src
-│   ├── main
-│   │   └── java/com/example/automation/framework
-│   │       ├── pages/
-│   │       ├── utils/
-│   │       ├── reporting/
-│   │       └── DriverManager.java
-│   │
-│   └── test
-│       └── java/tests
-│           └── LoginTest.java
+│ ├── main
+│ │ └── java
+│ │ └── com.example.automation.framework
+│ │ ├── driver
+│ │ │ └── DriverManager.java
+│ │ ├── pages
+│ │ │ ├── LoginPage.java
+│ │ │ └── InventoryPage.java
+│ │ ├── reporting
+│ │ │ ├── ExtentManager.java
+│ │ │ └── TestListener.java
+│ │ └── utils
+│ │ └── WaitHelper.java
+│ │
+│ └── test
+│ └── java
+│ └── tests
+│ └── LoginTest.java
 │
-├── reports/               # Extent Reports output with timestamp
-├── screenshots/           # Failure screenshots
-├── .github/workflows/     # CI pipeline
-├── testng.xml
-├── pom.xml
-└── README.md
+├── reports
+│ ├── screenshots
+│ └── AutomationReport-<timestamp>.html
+│
+└── .github
+└── workflows
+└── ci.yml
 
-⚙️ Features
-✔ Page Object Model (POM)
+✨ Features (Premium Implementation)
+🔹 1. Page Object Model (POM)
+Clean, reusable, maintainable, scalable test design.
 
-Reusable and maintainable page classes for clean test code.
+🔹 2. Centralized WebDriver Manager
+Handles setup, teardown, and CI-compatible headless execution.
 
-✔ Centralized Driver Management
+🔹 3. Explicit Wait Wrapper
+Custom WaitHelper for stable, flake-free tests.
 
-A single place for browser initialization, teardown, and setup.
+🔹 4. Extent Reports (HTML)
+Beautiful reports auto-saved to /reports with timestamps.
 
-✔ Explicit Wait Wrapper
+🔹 5. Screenshots on Failure
+Attached automatically inside the Extent HTML report.
 
-Custom WaitHelper for stable tests.
+🔹 6. Logging (SLF4J + Logback)
+Debug & info logs with clean output.
 
-✔ Extent Reports (HTML)
+🔹 7. Full GitHub Actions Integration
+Every push automatically runs tests on Ubuntu:
+Installs Java
+Installs Chrome & ChromeDriver
+Executes mvn clean test
+Uploads reports as CI artifacts
 
-Auto-generated timestamped reports saved in /reports.
+🚦 CI/CD Status
+✔ Automatic Tests on Every Push
+✔ Chrome Installed on Runner
+✔ Reporting + Artifacts
+✔ Status Badge Included
 
-✔ Screenshots on Failure
+▶️ How to Run Tests Locally
+1️⃣ Clone the repo: git clone https://github.com/<username>/web_automation_framework.git
 
-Listener automatically attaches screenshot to Extent report.
+2️⃣ Navigate into project: cd web_automation_framework
 
-✔ Logging (SLF4J)
+3️⃣ Run tests: mvn clean test
 
-Debug + info logs for easier debugging.
+4️⃣ View Reports: Open:/reports/AutomationReport-<timestamp>.html
 
-✔ CI/CD with GitHub Actions
+Screenshots saved in: /reports/screenshots/
 
-Every push automatically runs:
-
-mvn clean test
-
-
-on GitHub’s Ubuntu runner with Chrome installed.
-
-▶️ How to Run Tests
-1️⃣ Clone the repo
-git clone https://github.com/your-username/web_automation_framework.git
-
-2️⃣ Navigate into the project
-cd web_automation_framework
-
-3️⃣ Run tests
-mvn clean test
-
-4️⃣ Reports generated at
-/reports/AutomationReport-<timestamp>.html
-/screenshots/<testname>.png
-
-🧪 Sample Test (LoginTest)
+🧪 Sample Test (LoginTest.java)
 @Test
 public void testLogin() {
 LoginPage login = new LoginPage();
 InventoryPage home = login.login("standard_user", "secret_sauce");
-Assert.assertTrue(home.isLoaded(), "Home page did not load!");
+
+    Assert.assertTrue(home.isLoaded(), "Home page did not load!");
+
 }
 
-🤖 GitHub Actions CI Pipeline
+☁️ GitHub Actions CI Pipeline
+File: .github/workflows/ci.yml
 
-Auto-triggered on every push:
+Runs automatically on every push:
+Setup Java
+Setup Chrome + Driver
+Run Selenium Tests
+Upload Reports
 
-Installs Java 17
+📦 Maven Dependencies Includes:
+1.selenium-java
+2.testng
+3.extentreports
+4.slf4j-api
+5.logback-classic
+6.webdrivermanager
 
-Installs Chrome + ChromeDriver
-
-Runs Maven tests
-
-Uploads reports as artifacts
-
-Workflow file:
-
-.github/workflows/ci.yml
-
-📸 Screenshots & Reporting
-
-Screenshots on every test failure
-
-Attached automatically to Extent Report
-
-Timestamped HTML report generated
-
-📦 Dependencies (Maven)
-
-Includes:
-
-selenium-java
-
-testng
-
-extentreports
-
-slf4j + logback
-
-webdrivermanager
-
-🙌 Contributions
-
-Feel free to fork the repo and submit a PR.
+🤝 Contributions:
+Contributions, issues, and pull requests are welcome!
+If you like the project, ⭐ star the repository — it helps a lot.
