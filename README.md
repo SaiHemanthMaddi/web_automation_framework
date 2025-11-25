@@ -61,11 +61,15 @@ cd web_automation_framework
 mvn clean test
 
 4️⃣ View Reports
-/reports/AutomationReport-TIMESTAMP.html  
+
+/reports/AutomationReport-TIMESTAMP.html 
+
 /reports/screenshots/
 
 Generated under:
+
 /reports/AutomationReport-TIMESTAMP.html  
+
 /reports/screenshots/
 
 🧪 Sample Test
@@ -80,20 +84,30 @@ InventoryPage home = login.login("standard_user", "secret_sauce");
 
 🔄 GitHub Actions – CI Pipeline
 Automatically runs on every push:
+
 ✔ Installs Java
+
 ✔ Installs Chrome + ChromeDriver
+
 ✔ Runs Maven tests
+
 ✔ Uploads Extent Reports + Screenshots
 
 Workflow file:
 .github/workflows/ci.yml
 
 📦 Dependencies (Maven)
+
 1.selenium-java
+
 2.testng
+
 3.extentreports
+
 4.slf4j
+
 5.logback
+
 6.webdrivermanager
 
 🤝 Contributions: PRs and improvements are welcome!
