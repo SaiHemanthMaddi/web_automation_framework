@@ -70,8 +70,19 @@ jobs:
         with:
           edge-version: stable
 
+      - name: Resolve EdgeDriver Path
+        if: matrix.browser == 'edge'
+        run: |
+          EDGE_DRIVER_PATH="$(command -v msedgedriver || true)"
+          if [ -z "$EDGE_DRIVER_PATH" ]; then
+            echo "msedgedriver not found in PATH"
+            exit 1
+          fi
+          echo "EDGE_DRIVER_PATH=$EDGE_DRIVER_PATH" >> $GITHUB_ENV
+          echo "Using EdgeDriver: $EDGE_DRIVER_PATH"
+
       - name: Run Tests - ${{ matrix.browser }}
-        run: mvn clean test -Dbrowser=${{ matrix.browser }} -Dheadless=true
+        run: mvn clean test -Dbrowser=${{ matrix.browser }} -Dheadless=true -DskipWdmInCi=true
         continue-on-error: false
 
       - name: Upload Test Reports

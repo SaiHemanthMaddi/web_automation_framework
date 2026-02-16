@@ -76,8 +76,7 @@ public class DriverManager {
     }
 
     private static void setupEdge() {
-        WebDriverManager.edgedriver().setup();
-        log.info("EdgeDriver setup completed.");
+        configureEdgeDriver();
 
         EdgeOptions options = new EdgeOptions();
         options.addArguments("--start-maximized");
@@ -92,6 +91,47 @@ public class DriverManager {
 
         log.info("Launching Edge browser...");
         driver.set(new EdgeDriver(options));
+    }
+
+    private static void configureEdgeDriver() {
+        String configuredPath = System.getProperty("edge.driver.path", System.getenv("EDGE_DRIVER_PATH"));
+        if (configuredPath != null && !configuredPath.isBlank()) {
+            System.setProperty("webdriver.edge.driver", configuredPath);
+            log.info("Using local EdgeDriver binary from path: {}", configuredPath);
+            return;
+        }
+
+        boolean skipWdmInCi = Boolean.parseBoolean(System.getProperty("skipWdmInCi", "true"));
+        if (isCiEnvironment() && skipWdmInCi) {
+            log.info("CI environment detected; skipping WebDriverManager for Edge and using msedgedriver from PATH.");
+            return;
+        }
+
+        WebDriverManager edgedriverManager = WebDriverManager.edgedriver();
+        String edgeDriverVersion = System.getProperty("edgeDriverVersion");
+        if (edgeDriverVersion != null && !edgeDriverVersion.isBlank()) {
+            edgedriverManager.driverVersion(edgeDriverVersion);
+            log.info("Using pinned EdgeDriver version: {}", edgeDriverVersion);
+        }
+
+        String wdmCachePath = System.getProperty("wdmCachePath");
+        if (wdmCachePath != null && !wdmCachePath.isBlank()) {
+            edgedriverManager.cachePath(wdmCachePath);
+            log.info("Using WebDriverManager cache path: {}", wdmCachePath);
+        }
+
+        boolean avoidResolutionCache = Boolean.parseBoolean(System.getProperty("wdmAvoidResolutionCache", "false"));
+        if (avoidResolutionCache) {
+            edgedriverManager.avoidResolutionCache();
+            log.info("WebDriverManager resolution cache bypass is enabled for EdgeDriver.");
+        }
+
+        edgedriverManager.setup();
+        log.info("EdgeDriver setup completed via WebDriverManager.");
+    }
+
+    private static boolean isCiEnvironment() {
+        return "true".equalsIgnoreCase(System.getenv("CI"));
     }
 
     private static boolean isHeadlessMode() {
