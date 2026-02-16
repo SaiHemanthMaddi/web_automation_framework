@@ -1,11 +1,46 @@
-name: Java Selenium CI
+name: Selenium Test Automation
 
-on: [push]
+on:
+  # Trigger on push to main branch
+  push:
+    branches: [ main, master ]
+  
+  # Scheduled nightly runs at 2:00 AM UTC
+  schedule:
+    - cron: '0 2 * * *'
+  
+  # Manual trigger with browser selection
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'Browser to run tests on'
+        required: true
+        default: 'chrome'
+        type: choice
+        options:
+          - chrome
+          - firefox
+          - edge
+          - all
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: >-
+          ${{
+            (github.event_name == 'workflow_dispatch' && github.event.inputs.browser == 'all')
+            && fromJSON('["chrome", "firefox", "edge"]')
+            || (github.event_name == 'workflow_dispatch')
+            && fromJSON(format('["{0}"]', github.event.inputs.browser))
+            || fromJSON('["chrome", "firefox", "edge"]')
+          }}
+    
+    name: Test on ${{ matrix.browser }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -15,9 +50,56 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Install Chrome
+      - name: Setup Chrome
+        if: matrix.browser == 'chrome'
         uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
 
-      - name: Run Tests
-        run: mvn clean test
+      - name: Setup Firefox
+        if: matrix.browser == 'firefox'
+        uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: latest
+
+      - name: Setup Edge
+        if: matrix.browser == 'edge'
+        uses: browser-actions/setup-edge@v1
+        with:
+          edge-version: stable
+
+      - name: Run Tests - ${{ matrix.browser }}
+        run: mvn clean test -Dbrowser=${{ matrix.browser }} -Dheadless=true
+        continue-on-error: false
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ matrix.browser }}
+          path: reports/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ matrix.browser }}
+          path: reports/screenshots/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "### Test Results - ${{ matrix.browser }} :test_tube:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -d "reports" ]; then
+            echo "✅ Test reports generated successfully" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Reports uploaded as artifacts" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No test reports found" >> $GITHUB_STEP_SUMMARY
+          fi

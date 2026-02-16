@@ -52,25 +52,46 @@ web_automation_framework
 🚀 How to Run Tests
 
 1️⃣ Clone the Repository
+```bash
 git clone https://github.com/your-username/web_automation_framework.git
+```
 
 2️⃣ Navigate into the Project
+```bash
 cd web_automation_framework
+```
 
 3️⃣ Execute Tests
+
+**Run with default browser (Chrome):**
+```bash
 mvn clean test
+```
+
+**Run with specific browser:**
+```bash
+# Chrome
+mvn clean test -Dbrowser=chrome
+
+# Firefox
+mvn clean test -Dbrowser=firefox
+
+# Edge
+mvn clean test -Dbrowser=edge
+```
+
+**Run in headless mode:**
+```bash
+mvn clean test -Dbrowser=chrome -Dheadless=true
+```
 
 4️⃣ View Reports
 
-/reports/AutomationReport-TIMESTAMP.html 
-
-/reports/screenshots/
-
 Generated under:
 
-/reports/AutomationReport-TIMESTAMP.html  
+`/reports/AutomationReport-TIMESTAMP.html`  
 
-/reports/screenshots/
+`/reports/screenshots/`
 
 🧪 Sample Test
 @Test
@@ -82,19 +103,44 @@ InventoryPage home = login.login("standard_user", "secret_sauce");
 
 }
 
-🔄 GitHub Actions – CI Pipeline
-Automatically runs on every push:
+🔄 GitHub Actions – CI/CD Pipeline
 
-✔ Installs Java
+The project includes a comprehensive CI/CD pipeline with multiple trigger options:
 
-✔ Installs Chrome + ChromeDriver
+### 🕐 Scheduled Nightly Runs
+- **Automatically runs every night at 2:00 AM UTC**
+- Tests execute on all browsers (Chrome, Firefox, Edge)
+- Results and reports uploaded as artifacts
 
-✔ Runs Maven tests
+### 🎯 Manual Trigger
+Run tests on-demand from GitHub Actions tab:
 
-✔ Uploads Extent Reports + Screenshots
+1. Go to **Actions** → **Selenium Test Automation**
+2. Click **Run workflow**
+3. Select browser:
+   - `chrome` - Run on Chrome only
+   - `firefox` - Run on Firefox only
+   - `edge` - Run on Edge only
+   - `all` - Run on all browsers in parallel
 
-Workflow file:
-.github/workflows/ci.yml
+### 🔀 Multi-Browser Matrix Execution
+- Tests run in parallel across multiple browsers
+- Each browser gets its own test environment
+- Independent artifact uploads per browser
+
+### 📦 Automated Artifact Uploads
+- **Test Reports**: HTML reports with detailed test results (30-day retention)
+- **Screenshots**: Failure screenshots automatically captured and uploaded
+- Download from Actions run summary page
+
+### ✅ Pipeline Features
+- ✔ Installs Java 17
+- ✔ Installs Chrome, Firefox, and Edge browsers
+- ✔ Runs tests in headless mode
+- ✔ Uploads Extent Reports + Screenshots
+- ✔ Provides test summary in workflow output
+
+**Workflow file:** `.github/workflows/ci.yml`
 
 📦 Dependencies (Maven)
 
