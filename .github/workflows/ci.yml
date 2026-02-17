@@ -7,7 +7,7 @@ on:
   
   # Scheduled nightly runs at 2:00 AM UTC
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 20 * * *'
   
   # Manual trigger with browser selection
   workflow_dispatch:
