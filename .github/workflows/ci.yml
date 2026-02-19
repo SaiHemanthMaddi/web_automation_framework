@@ -20,7 +20,6 @@ on:
         options:
           - chrome
           - firefox
-          - edge
           - all
 
 jobs:
@@ -33,10 +32,10 @@ jobs:
         browser: >-
           ${{
             (github.event_name == 'workflow_dispatch' && github.event.inputs.browser == 'all')
-            && fromJSON('["chrome", "firefox", "edge"]')
+            && fromJSON('["chrome", "firefox"]')
             || (github.event_name == 'workflow_dispatch')
             && fromJSON(format('["{0}"]', github.event.inputs.browser))
-            || fromJSON('["chrome", "firefox", "edge"]')
+            || fromJSON('["chrome", "firefox"]')
           }}
     
     name: Test on ${{ matrix.browser }}
@@ -63,46 +62,6 @@ jobs:
         uses: browser-actions/setup-firefox@v1
         with:
           firefox-version: latest
-
-      - name: Setup Edge and EdgeDriver
-        if: matrix.browser == 'edge'
-        run: |
-          set -euo pipefail
-
-          # Install Microsoft Edge from Microsoft apt repo.
-          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-          sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
-          sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
-          rm -f microsoft.gpg
-
-          # Retry package index update/install to handle transient 404s from repo rotation.
-          for i in 1 2 3; do
-            sudo apt-get update && sudo apt-get install -y --no-install-recommends microsoft-edge-stable && break
-            echo "Edge install attempt $i failed, retrying..."
-            sleep 5
-          done
-
-          # Resolve an available EdgeDriver version using Edge major version.
-          EDGE_VERSION="$(microsoft-edge --version | awk '{print $3}')"
-          EDGE_MAJOR="${EDGE_VERSION%%.*}"
-          echo "Installed Edge version: $EDGE_VERSION (major: $EDGE_MAJOR)"
-
-          DRIVER_VERSION="$(curl -fsSL "https://msedgedriver.microsoft.com/LATEST_RELEASE_${EDGE_MAJOR}" | tr -d '\000\r\n' | sed 's/[^0-9.]//g')"
-          if [ -z "$DRIVER_VERSION" ]; then
-            echo "Failed to resolve EdgeDriver version for Edge major $EDGE_MAJOR"
-            exit 1
-          fi
-          echo "Resolved EdgeDriver version: $DRIVER_VERSION"
-          curl -fSL -o edgedriver_linux64.zip "https://msedgedriver.microsoft.com/${DRIVER_VERSION}/edgedriver_linux64.zip"
-          unzip -o edgedriver_linux64.zip
-          sudo mv msedgedriver /usr/local/bin/msedgedriver
-          sudo chmod +x /usr/local/bin/msedgedriver
-          rm -f edgedriver_linux64.zip LICENSE* Driver_Notes
-
-          EDGE_DRIVER_PATH="/usr/local/bin/msedgedriver"
-          echo "EDGE_DRIVER_PATH=$EDGE_DRIVER_PATH" >> "$GITHUB_ENV"
-          echo "Using EdgeDriver: $EDGE_DRIVER_PATH"
-          "$EDGE_DRIVER_PATH" --version
 
       - name: Run Tests - ${{ matrix.browser }}
         run: mvn clean test -Dbrowser=${{ matrix.browser }} -Dheadless=true -DskipWdmInCi=true
