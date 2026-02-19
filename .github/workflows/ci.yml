@@ -87,7 +87,11 @@ jobs:
           EDGE_MAJOR="${EDGE_VERSION%%.*}"
           echo "Installed Edge version: $EDGE_VERSION (major: $EDGE_MAJOR)"
 
-          DRIVER_VERSION="$(curl -fsSL "https://msedgedriver.microsoft.com/LATEST_RELEASE_${EDGE_MAJOR}")"
+          DRIVER_VERSION="$(curl -fsSL "https://msedgedriver.microsoft.com/LATEST_RELEASE_${EDGE_MAJOR}" | tr -d '\000\r\n' | sed 's/[^0-9.]//g')"
+          if [ -z "$DRIVER_VERSION" ]; then
+            echo "Failed to resolve EdgeDriver version for Edge major $EDGE_MAJOR"
+            exit 1
+          fi
           echo "Resolved EdgeDriver version: $DRIVER_VERSION"
           curl -fSL -o edgedriver_linux64.zip "https://msedgedriver.microsoft.com/${DRIVER_VERSION}/edgedriver_linux64.zip"
           unzip -o edgedriver_linux64.zip
