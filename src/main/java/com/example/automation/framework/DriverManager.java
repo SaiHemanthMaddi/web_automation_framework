@@ -103,7 +103,13 @@ public class DriverManager {
 
         boolean skipWdmInCi = Boolean.parseBoolean(System.getProperty("skipWdmInCi", "true"));
         if (isCiEnvironment() && skipWdmInCi) {
-            log.info("CI environment detected; skipping WebDriverManager for Edge and using msedgedriver from PATH.");
+            log.info("CI environment detected; skipping WebDriverManager for Edge and using msedgedriver from PATH/Selenium Manager.");
+            return;
+        }
+
+        boolean useWdmForEdge = Boolean.parseBoolean(System.getProperty("useWdmForEdge", "false"));
+        if (!useWdmForEdge) {
+            log.info("Skipping WebDriverManager for Edge; relying on Selenium Manager or PATH. Set -DuseWdmForEdge=true to enable WebDriverManager.");
             return;
         }
 
